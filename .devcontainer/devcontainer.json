@@ -3,7 +3,8 @@
 	"dockerFile": "Dockerfile",
 	"build": {
 		"args": {
-			"WORKSPACE": "${containerWorkspaceFolder}"
+			"WORKSPACE": "${containerWorkspaceFolder}",
+			"context": "../src"
 		}
 	},
 	"remoteUser": "ros",
@@ -53,5 +54,27 @@
 				"zachflower.uncrustify"
 			]
 		}
-	}
+	},
+	// Use 'postCreateCommand' to run commands after the container is created.
+	"postCreateCommand": "bash create.sh"
+	// "postStartCommand": [	"bash",
+	// 			"-c",
+	// 			"vcs import src < src/franka_ros2/dependency.repos --recursive --skip-existing",
+	// 			"bash",
+	// 			"-c",
+	// 			"gsegzees",
+	// 			// "&& colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release --cmake-args -DBUILD_TESTS=OFFges"]
+		
+	// // "bash -c \'vcs import src < src/franka_ros2/dependency.repos --recursive --skip-existing\'"]
+	// 			// "cd /workspaces/FR3_PC/src"
+	// 			// "vcs import /workspaces/FR3_PC/src < /workspaces/FR3_PC/src/franka_ros2/dependency.repos --recursive --skip-existing",
+	// 			// "cd ..",
+	// 			"colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release --cmake-args -DBUILD_TESTS=OFF",
+	// 			"cd src/",
+	// 			"vcs import < moveit2/moveit2.repos",
+	// 			"cd ..",
+	// 			"rosdep update",
+	// 			"rosdep install --from-paths . --ignore-src -r -y",
+	// 			"colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release",
+	// 			"source install/setup.bash"]
 }

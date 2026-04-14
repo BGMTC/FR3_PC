@@ -1,32 +1,85 @@
+# FR3_PC
 FROM althack/ros2:humble-cuda-dev 
 
-### For Windows, uncomment the following lines to install WSLg dependencies and utilize vGPU acceleration 
-# ENV DEBIAN_FRONTEND=noninteractive
-# RUN apt-get update \
-#    && apt-get -y install \
-#           vainfo \
-#           mesa-va-drivers \
-#           mesa-utils \
-#    # Clean up
-#         && apt-get autoremove -y \
-#         && apt-get clean -y \
-#         && rm -rf /var/lib/apt/lists/*
-# ENV LIBVA_DRIVER_NAME=d3d12
-# ENV LD_LIBRARY_PATH=/usr/lib/wsl/lib
-# CMD vainfo --display drm --device /dev/dri/card0
-# ENV DEBIAN_FRONTEND=dialog
-
 # ** [Optional] Uncomment this section to install additional packages. **
-#
-# ENV DEBIAN_FRONTEND=noninteractive
+
+# Install and build libfranka
+# apt-get clean && rm -rf /var/lib/apt/lists/* &&
 # RUN apt-get update \
-#    && apt-get -y install --no-install-recommends <your-package-list-here> \
-#    #
-#    # Clean up
-#    && apt-get autoremove -y \
-#    && apt-get clean -y \
-#    && rm -rf /var/lib/apt/lists/*
-# ENV DEBIAN_FRONTEND=dialog
+#    && apt-get install -y libpoco-dev libeigen3-dev 
+# # RUN git clone https://github.com/frankaemika/libfranka.git --recursive -b 0.19.0 
+# # RUN cd libfranka
+# RUN git clone --recurse-submodules https://github.com/frankarobotics/libfranka.git
+# RUN cd libfranka
+# RUN git checkout 0.19.0 
+# RUN mkdir build && cd build 
+# RUN cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=OFF  .. 
+# RUN cmake --build . -j$(nproc) 
+# RUN cpack -G DEB 
+# RUN sudo dpkg -i libfranka-*.deb
+
+RUN apt-get update \
+   && apt-get -y install --no-install-recommends\
+    build-essential \
+    cmake \
+    git \
+    wget \
+    libeigen3-dev \
+    libpoco-dev \
+    libfmt-dev \
+    pybind11-dev
+
+# ENV VERSION=0.19.0
+
+# RUN wget https://github.com/frankarobotics/libfranka/releases/download/${VERSION}/libfranka_${VERSION}_jammy_amd64.deb
+# RUN wget https://github.com/frankarobotics/libfranka/releases/download/${VERSION}/libfranka_${VERSION}_jammy_amd64.deb.sha256
+# RUN sha256sum -c libfranka_${VERSION}_jammy_amd64.deb.sha256
+# RUN sudo dpkg -i libfranka_${VERSION}_jammy_amd64.deb
+
+# Install required ROS packages (C+P from Adam's docker, with ros version freeze)
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update \
+   && apt-get -y install --no-install-recommends\
+   python3-tk \
+   ros-humble-rviz2 \
+   ros-humble-control-toolbox \
+   ros-humble-cv-bridge \
+#  ros-humble-moveit-py \  doesn't exist
+   ros-humble-moveit-configs-utils \
+   ros-humble-moveit-planners \
+   ros-humble-moveit-setup-assistant \
+   ros-humble-moveit-servo \
+   ros-humble-moveit-simple-controller-manager \
+   ros-humble-moveit-resources-panda-moveit-config \
+   ros-humble-ros2-control \
+   ros-humble-joint-state-broadcaster \
+   ros-humble-joint-state-publisher \
+   ros-humble-joint-trajectory-controller \
+   ros-humble-realsense2-camera \
+   ros-humble-pinocchio \
+   #
+   # Clean up
+   && apt-get autoremove -y \
+   && apt-get clean -y \
+   && rm -rf /var/lib/apt/lists/*
+ENV DEBIAN_FRONTEND=dialog
+
+# Install required python modules (C+P from Adam's docker)
+RUN pip install numpy==1.26.4 \
+ && pip install opencv-python \
+ && pip install pyassimp \
+ && pip install scipy \
+ && pip install transitions \
+ && pip install setuptools==58.2.0 \
+ && pip install pymodbus \
+ && pip install ipykernel \
+ && pip install icecream \
+ && pip install typing_extensions==4.4.0\
+ && pip install FreeSimpleGUI \
+ && pip install roboticstoolbox-python 
+   
+   #torch torchvision timm scikit-learn
+
 
 # Set up auto-source of workspace for ros user
 ARG WORKSPACE
@@ -37,18 +90,58 @@ RUN echo "if [ -f ${WORKSPACE}/install/setup.bash ]; then source ${WORKSPACE}/in
 # Expose the nvidia driver to allow opengl 
 # Dependencies for glvnd and X11.
 ################
-# RUN apt-get update \
-#  && apt-get install -y -qq --no-install-recommends \
-#   libglvnd0 \
-#   libgl1 \
-#   libglx0 \
-#   libegl1 \
-#   libxext6 \
-#   libx11-6 \
-# && rm -rf /var/lib/apt/lists/*
+RUN apt-get update \
+ && apt-get install -y -qq --no-install-recommends \
+  libglvnd0 \
+  libgl1 \
+  libglx0 \
+  libegl1 \
+  libxext6 \
+  libx11-6 \
+&& rm -rf /var/lib/apt/lists/*
 
 # Env vars for the nvidia-container-runtime.
-#ENV NVIDIA_VISIBLE_DEVICES all
-#ENV NVIDIA_DRIVER_CAPABILITIES graphics,utility,compute
+ENV NVIDIA_VISIBLE_DEVICES all
+ENV NVIDIA_DRIVER_CAPABILITIES graphics,utility,compute
 
-#ENV QT_X11_NO_MITSHM=1
+ENV QT_X11_NO_MITSHM=1
+
+# Import ros dependancies 
+# RUN vcs import /workspaces/FR3_PC/src < /workspaces/FR3_PC/src/franka_ros2/dependency.repos --recursive --skip-existing
+# ----- try as a post start command -------
+
+# Install moveit-py
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+ ros-humble-moveit* \
+   && apt-get autoremove -y \
+   && apt-get clean -y \
+   && rm -rf /var/lib/apt/lists/*
+
+# RUN git clone https://github.com/moveit/moveit2.git -b humble
+# RUN vcs import < moveit2/moveit2.repos 
+# RUN rosdep update 
+# RUN rosdep install --from-paths . --ignore-src -r -y
+
+
+# commands 
+#
+
+# vcs import src < src/franka_ros2/dependency.repos --recursive --skip-existing
+# --------------ADDED----------- sudo apt-get update
+# --------------ADDED----------- sudo apt-get install -y ros-humble-pinocchio 
+#  colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release --cmake-args -DBUILD_TESTS=OFF
+
+# History from getting moveitPY working
+# sudo apt update
+#    18  sudo apt install ros-humble-moveit*
+#    19  ls
+#    20  cd src
+#    21  ls
+#    22  git clone https://github.com/moveit/moveit2.git -b humble
+#    23  vcs import < moveit2/moveit2.repos
+#    24  cd ..
+#    25  rosdep update
+#    26  rosdep install --from-paths src --ignore-src -r -y
+#    27  colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
+#    28  source install/setup.bash

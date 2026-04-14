@@ -70,5 +70,6 @@
         ".vscode",
         ".vscode-insiders",
         ".devcontainer/devcontainer.json"
-    ]
+    ],
+    "cmake.sourceDirectory": "/home/mtcpanda/workspaces/mtc_fr3_pc/FR3_PC/src/franka_ros2/franka_bringup"
 }
