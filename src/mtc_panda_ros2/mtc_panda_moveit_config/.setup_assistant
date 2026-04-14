@@ -1,0 +1,10 @@
+moveit_setup_assistant_config:
+  urdf:
+    package: mtc_panda_description
+    relative_path: urdf/panda.xacro
+  srdf:
+    relative_path: config/panda.srdf
+  package_settings:
+    author_name: adam.watts
+    author_email: adam.watts@the-mtc.org
+    generated_timestamp: 1695759009

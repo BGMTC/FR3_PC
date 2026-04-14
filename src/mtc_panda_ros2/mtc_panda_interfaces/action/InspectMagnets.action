@@ -1,0 +1,11 @@
+# Request
+int32 x1  # x coordinate of inspection line start
+int32 y1  # y coordinate of inspection line start
+int32 x2  # x coordinate of inspection line end
+int32 y2  # y coordinate of inspection line end
+---
+# Result
+bool success
+---
+# Feedback
+builtin_interfaces/Time time_elapsed

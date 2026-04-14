@@ -1,0 +1,3 @@
+string target_frame  # The desired TF frame for the response to be in. The server is responsible for doing the transform
+---
+geometry_msgs/PoseStamped pose_stamped
