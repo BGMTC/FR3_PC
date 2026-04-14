@@ -1,0 +1,8 @@
+[submodule "src/franka_ros2"]
+	path = src/franka_ros2
+	url = https://github.com/frankarobotics/franka_ros2.git
+	branch = humble
+[submodule "src/moveit2"]
+	path = src/moveit2
+	url = git@github.com:moveit/moveit2.git
+	branch = humble
