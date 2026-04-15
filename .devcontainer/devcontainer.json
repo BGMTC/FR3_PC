@@ -1,80 +1,75 @@
-// See https://aka.ms/vscode-remote/devcontainer.json for format details.
 {
-	"dockerFile": "Dockerfile",
-	"build": {
-		"args": {
-			"WORKSPACE": "${containerWorkspaceFolder}",
-			"context": "../src"
-		}
-	},
-	"remoteUser": "ros",
-	"runArgs": [
-		"--network=host",
-		"--cap-add=SYS_PTRACE",
-		"--security-opt=seccomp:unconfined",
-		"--security-opt=apparmor:unconfined",
-		"--volume=/tmp/.X11-unix:/tmp/.X11-unix",
-		"--volume=/mnt/wslg:/mnt/wslg",
-		"--ipc=host"
-		// uncomment to use intel iGPU
-		// "--device=/dev/dri"
-		// uncomment to use Nvidia GPU with Linux, https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
-		// "--runtime=nvidia"
-		// uncomment to use Nvidia GPU with Windows WSL2
-		// "--volume=/usr/lib/wsl:/usr/lib/wsl",
-		// "--device=/dev/dxg",
-		// "--device=/dev/dri/card0",
-		// "--device=/dev/dri/renderD128",
-		// "--gpus=all"
-	],
-	"containerEnv": {
-		"DISPLAY": "${localEnv:DISPLAY}", // Needed for GUI try ":0" for windows
-		"WAYLAND_DISPLAY": "${localEnv:WAYLAND_DISPLAY}",
-		"XDG_RUNTIME_DIR": "${localEnv:XDG_RUNTIME_DIR}",
-		"PULSE_SERVER": "${localEnv:PULSE_SERVER}",
-		"LIBGL_ALWAYS_SOFTWARE": "1", // Needed for software rendering of opengl
-		"QT_X11_NO_MITSHM": "1"
-	},
-	// Set *default* container specific settings.json values on container create.
-	"customizations": {
-		"vscode": {
-			"extensions": [
-				"althack.ament-task-provider",
-				"betwo.b2-catkin-tools",
-				"DotJoshJohnson.xml",
-				"ms-azuretools.vscode-docker",
-				"ms-iot.vscode-ros",
-				"ms-python.python",
-				"ms-vscode.cpptools",
-				"redhat.vscode-yaml",
-				"smilerobotics.urdf",
-				"streetsidesoftware.code-spell-checker",
-				"twxs.cmake",
-				"yzhang.markdown-all-in-one",
-				"zachflower.uncrustify"
-			]
-		}
-	},
-	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "bash create.sh"
-	// "postStartCommand": [	"bash",
-	// 			"-c",
-	// 			"vcs import src < src/franka_ros2/dependency.repos --recursive --skip-existing",
-	// 			"bash",
-	// 			"-c",
-	// 			"gsegzees",
-	// 			// "&& colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release --cmake-args -DBUILD_TESTS=OFFges"]
-		
-	// // "bash -c \'vcs import src < src/franka_ros2/dependency.repos --recursive --skip-existing\'"]
-	// 			// "cd /workspaces/FR3_PC/src"
-	// 			// "vcs import /workspaces/FR3_PC/src < /workspaces/FR3_PC/src/franka_ros2/dependency.repos --recursive --skip-existing",
-	// 			// "cd ..",
-	// 			"colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release --cmake-args -DBUILD_TESTS=OFF",
-	// 			"cd src/",
-	// 			"vcs import < moveit2/moveit2.repos",
-	// 			"cd ..",
-	// 			"rosdep update",
-	// 			"rosdep install --from-paths . --ignore-src -r -y",
-	// 			"colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release",
-	// 			"source install/setup.bash"]
+    "name": "FR3_PC",
+    "dockerFile": "Dockerfile_claude",
+    "build": {
+        "args": {
+            "WORKSPACE": "${containerWorkspaceFolder}",
+            "context": ".."
+        }
+    },
+
+    "remoteUser": "ros",
+
+    "workspaceFolder": "/ros2_ws",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/ros2_ws,type=bind,consistency=cached",
+
+    "runArgs": [
+        "--network=host",
+        "--cap-add=SYS_PTRACE",
+        "--security-opt=seccomp:unconfined",
+        "--security-opt=apparmor:unconfined",
+        "--volume=/tmp/.X11-unix:/tmp/.X11-unix",
+        "--volume=/mnt/wslg:/mnt/wslg",
+        "--ipc=host"
+        // uncomment to use intel iGPU
+        // "--device=/dev/dri"
+        // uncomment to use Nvidia GPU with Linux
+        // "--runtime=nvidia"
+        // uncomment to use Nvidia GPU with Windows WSL2
+        // "--volume=/usr/lib/wsl:/usr/lib/wsl",
+        // "--device=/dev/dxg",
+        // "--device=/dev/dri/card0",
+        // "--device=/dev/dri/renderD128",
+        // "--gpus=all"
+    ],
+
+    "containerEnv": {
+        "DISPLAY": "${localEnv:DISPLAY}",
+        "WAYLAND_DISPLAY": "${localEnv:WAYLAND_DISPLAY}",
+        "XDG_RUNTIME_DIR": "${localEnv:XDG_RUNTIME_DIR}",
+        "PULSE_SERVER": "${localEnv:PULSE_SERVER}",
+        "LIBGL_ALWAYS_SOFTWARE": "1",
+        "QT_X11_NO_MITSHM": "1"
+    },
+
+    // Ensure submodules are populated on the host before container starts
+    "initializeCommand": "git submodule update --init --recursive",
+
+    // Runs once on first container creation - install rosdep deps
+   "postCreateCommand": "/bin/bash -c 'vcs import /ros2_ws/src < /ros2_ws/src/franka_ros2/dependency.repos --recursive && sudo rosdep update && sudo rosdep install --from-paths /ros2_ws/src --ignore-src -r -y'",
+
+    // Runs every time container starts - build workspace and ensure sourcing
+    // This is what puts moveit_py onto PYTHONPATH so imports work
+    "postStartCommand": "/bin/bash -c 'source /opt/ros/humble/setup.bash && cd /ros2_ws && colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF && echo \"source /opt/ros/humble/setup.bash\" >> ~/.bashrc && echo \"source /ros2_ws/install/setup.bash\" >> ~/.bashrc'",
+    // "postStartCommand": "/bin/bash -c 'source /opt/ros/humble/setup.bash && cd /ros2_ws && colcon build --packages-select franka_ros2 moveit_py --cmake-args -DCMAKE_BUILD_TYPE=Release && echo \"source /opt/ros/humble/setup.bash\" >> ~/.bashrc && echo \"source /ros2_ws/install/setup.bash\" >> ~/.bashrc'",
+
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "althack.ament-task-provider",
+                "betwo.b2-catkin-tools",
+                "DotJoshJohnson.xml",
+                "ms-azuretools.vscode-docker",
+                "ms-iot.vscode-ros",
+                "ms-python.python",
+                "ms-vscode.cpptools",
+                "redhat.vscode-yaml",
+                "smilerobotics.urdf",
+                "streetsidesoftware.code-spell-checker",
+                "twxs.cmake",
+                "yzhang.markdown-all-in-one",
+                "zachflower.uncrustify"
+            ]
+        }
+    }
 }
