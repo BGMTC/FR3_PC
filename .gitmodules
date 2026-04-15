@@ -4,5 +4,5 @@
 	branch = humble
 [submodule "src/moveit2"]
 	path = src/moveit2
-	url = git@github.com:moveit/moveit2.git
+	url = https://github.com/moveit/moveit2.git
 	branch = humble
