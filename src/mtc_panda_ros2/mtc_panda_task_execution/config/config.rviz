@@ -66,59 +66,123 @@ Visualization Manager:
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
-        magtec_ee:
+        # magtec_ee:
+        #   Alpha: 1
+        #   Show Axes: false
+        #   Show Trail: false
+        #   Value: true
+        # magtec_tcp:
+        #   Alpha: 1
+        #   Show Axes: false
+        #   Show Trail: false
+        # panda_link0:
+        #   Alpha: 1
+        #   Show Axes: false
+        #   Show Trail: false
+        #   Value: true
+        # panda_link1:
+        #   Alpha: 1
+        #   Show Axes: false
+        #   Show Trail: false
+        #   Value: true
+        # panda_link2:
+        #   Alpha: 1
+        #   Show Axes: false
+        #   Show Trail: false
+        #   Value: true
+        # panda_link3:
+        #   Alpha: 1
+        #   Show Axes: false
+        #   Show Trail: false
+        #   Value: true
+        # panda_link4:
+        #   Alpha: 1
+        #   Show Axes: false
+        #   Show Trail: false
+        #   Value: true
+        # panda_link5:
+        #   Alpha: 1
+        #   Show Axes: false
+        #   Show Trail: false
+        #   Value: true
+        # panda_link6:
+        #   Alpha: 1
+        #   Show Axes: false
+        #   Show Trail: false
+        #   Value: true
+        # panda_link7:
+        #   Alpha: 1
+        #   Show Axes: false
+        #   Show Trail: false
+        #   Value: true
+        # panda_link8:
+        #   Alpha: 1
+        #   Show Axes: false
+        #   Show Trail: false
+        fr3_hand:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        magtec_tcp:
+        fr3_hand_tcp:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        panda_link0:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        panda_link1:
+        fr3_leftfinger:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        panda_link2:
+        fr3_link0:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        panda_link3:
+        fr3_link1:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        panda_link4:
+        fr3_link2:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        panda_link5:
+        fr3_link3:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        panda_link6:
+        fr3_link4:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        panda_link7:
+        fr3_link5:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        panda_link8:
+        fr3_link6:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+          Value: true
+        fr3_link7:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        fr3_link8:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        fr3_rightfinger:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
       Loop Animation: false
       Name: Trajectory
       Robot Alpha: 0.5
@@ -153,59 +217,123 @@ Visualization Manager:
           Expand Link Details: false
           Expand Tree: false
           Link Tree Style: Links in Alphabetic Order
-          magtec_ee:
+          # magtec_ee:
+          #   Alpha: 1
+          #   Show Axes: false
+          #   Show Trail: false
+          #   Value: true
+          # magtec_tcp:
+          #   Alpha: 1
+          #   Show Axes: false
+          #   Show Trail: false
+          # panda_link0:
+          #   Alpha: 1
+          #   Show Axes: false
+          #   Show Trail: false
+          #   Value: true
+          # panda_link1:
+          #   Alpha: 1
+          #   Show Axes: false
+          #   Show Trail: false
+          #   Value: true
+          # panda_link2:
+          #   Alpha: 1
+          #   Show Axes: false
+          #   Show Trail: false
+          #   Value: true
+          # panda_link3:
+          #   Alpha: 1
+          #   Show Axes: false
+          #   Show Trail: false
+          #   Value: true
+          # panda_link4:
+          #   Alpha: 1
+          #   Show Axes: false
+          #   Show Trail: false
+          #   Value: true
+          # panda_link5:
+          #   Alpha: 1
+          #   Show Axes: false
+          #   Show Trail: false
+          #   Value: true
+          # panda_link6:
+          #   Alpha: 1
+          #   Show Axes: false
+          #   Show Trail: false
+          #   Value: true
+          # panda_link7:
+          #   Alpha: 1
+          #   Show Axes: false
+          #   Show Trail: false
+          #   Value: true
+          # panda_link8:
+          #   Alpha: 1
+          #   Show Axes: false
+          #   Show Trail: false
+          fr3_hand:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          magtec_tcp:
+          fr3_hand_tcp:
             Alpha: 1
             Show Axes: false
             Show Trail: false
-          panda_link0:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          panda_link1:
+          fr3_leftfinger:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          panda_link2:
+          fr3_link0:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          panda_link3:
+          fr3_link1:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          panda_link4:
+          fr3_link2:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          panda_link5:
+          fr3_link3:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          panda_link6:
+          fr3_link4:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          panda_link7:
+          fr3_link5:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          panda_link8:
+          fr3_link6:
             Alpha: 1
             Show Axes: false
             Show Trail: false
+            Value: true
+          fr3_link7:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          fr3_link8:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          fr3_rightfinger:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
         Robot Alpha: 1
         Show Robot Collision: false
         Show Robot Visual: true
@@ -227,27 +355,31 @@ Visualization Manager:
           Value: true
         cell:
           Value: true
-        magtec_ee:
+        fr3_hand:
           Value: true
-        magtec_tcp:
+        fr3_hand_tcp:
+          Value: true        
+        fr3_leftfinger:
           Value: true
-        panda_link0:
+        fr3_link0:
           Value: true
-        panda_link1:
+        fr3_link1:
           Value: true
-        panda_link2:
+        fr3_link2:
           Value: true
-        panda_link3:
+        fr3_link3:
           Value: true
-        panda_link4:
+        fr3_link4:
           Value: true
-        panda_link5:
+        fr3_link5:
           Value: true
-        panda_link6:
+        fr3_link6:
           Value: true
-        panda_link7:
+        fr3_link7:
           Value: true
-        panda_link8:
+        fr3_link8:
+          Value: true
+        fr3_rightfinger:
           Value: true
         world:
           Value: true
@@ -256,19 +388,42 @@ Visualization Manager:
       Show Arrows: true
       Show Axes: true
       Show Names: false
+      # Tree:
+      #   world:
+      #     panda_link0:
+      #       cell:
+      #         {}
+      #       panda_link1:
+      #         panda_link2:
+      #           panda_link3:
+      #             panda_link4:
+      #               panda_link5:
+      #                 panda_link6:
+      #                   panda_link7:
+      #                     panda_link8:
+      #                       camera_link:
+      #                         camera_color_frame:
+      #                           camera_color_optical_frame:
+      #                             {}
+      #                         camera_depth_frame:
+      #                           camera_depth_optical_frame:
+      #                             {}
+      #                       magtec_ee:
+      #                         magtec_tcp:
+      #                           {}
       Tree:
         world:
-          panda_link0:
+          fr3_link0:
             cell:
               {}
-            panda_link1:
-              panda_link2:
-                panda_link3:
-                  panda_link4:
-                    panda_link5:
-                      panda_link6:
-                        panda_link7:
-                          panda_link8:
+            fr3_link1:
+              fr3_link2:
+                fr3_link3:
+                  fr3_link4:
+                    fr3_link5:
+                      fr3_link6:
+                        fr3_link7:
+                          fr3_link8:
                             camera_link:
                               camera_color_frame:
                                 camera_color_optical_frame:
@@ -276,8 +431,15 @@ Visualization Manager:
                               camera_depth_frame:
                                 camera_depth_optical_frame:
                                   {}
-                            magtec_ee:
-                              magtec_tcp:
+                            # magtec_ee:
+                            #   magtec_tcp:
+                            #     {}
+                            fr3_hand:
+                              fr3_hand_tcp:
+                                {}
+                              fr3_leftfinger:
+                                {}
+                              fr3_rightfinger:
                                 {}
       Update Interval: 0
       Value: true

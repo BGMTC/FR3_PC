@@ -8,7 +8,7 @@ import rclpy.logging
 
 from franka_msgs.action import Grasp, Move
 from geometry_msgs.msg import Pose
-from moveit import MoveItPy
+# from moveit import MoveItPy
 from moveit.core.kinematic_constraints import construct_joint_constraint
 from moveit.core.robot_state import RobotState
 from moveit.planning import MoveItPy, PlanRequestParameters
@@ -39,13 +39,13 @@ class TaskExecutor(Node):
         # Instantiate MoveItPy instance and get planning component
         self.max_velocity_scaling_factor = 0.5
         self.max_acceleration_scaling_factor = 0.3
-        self.panda = MoveItPy(node_name="moveit_py_planning_scene")
-        self.panda_arm = self.panda.get_planning_component("panda_arm")
+        self.franka = MoveItPy(node_name="moveit_py_planning_scene")
+        self.franka_arm = self.franka.get_planning_component("fr3_arm")
         self.get_logger().info("MoveItPy instance created")
 
         # Populate planning scene
         cell_tf = tf2_to_homogenous(['0.52326', '0.070703', '0.0', '0.0', '0.0', '-0.38269', '0.923877'])
-        self.planning_scene_monitor = self.panda.get_planning_scene_monitor()
+        self.planning_scene_monitor = self.franka.get_planning_scene_monitor()
         add_walls(self.planning_scene_monitor, back_spacing=0.2, left_spacing=0.5, right_spacing=0.05, cell_tf=cell_tf)
         add_panda_cell(self.planning_scene_monitor, cell_tf=cell_tf)
         self.get_logger().info("Planning scene populated")
@@ -90,10 +90,10 @@ class TaskExecutor(Node):
             self.get_logger().info("Modbus service connected")
 
         # Gripper interfaces
-        self.gripper_close_client = ActionClient(self, Grasp, '/panda_gripper/grasp')
+        self.gripper_close_client = ActionClient(self, Grasp, '/franka_gripper/grasp')
         while not self.gripper_close_client.wait_for_server(1.0):
             self.get_logger().info(f"Waiting for franka_msgs.action.Grasp action server")
-        self.gripper_open_client = ActionClient(self, Move, '/panda_gripper/move')
+        self.gripper_open_client = ActionClient(self, Move, '/franka_gripper/move')
         while not self.gripper_open_client.wait_for_server(1.0):
             self.get_logger().info(f"Waiting for franka_msgs.action.Move action server")
 
@@ -102,7 +102,7 @@ class TaskExecutor(Node):
         self.finish_init()
 
     def load_task(self) -> List[Task]:
-        """Using the 'task_name' parameter, load in the correct task from mtc_panda_task_execution/task_definition.py"""
+        """Using the 'task_name' parameter, load in the correct task from mtc_franka_task_execution/task_definition.py"""
         try:
             task_sequence = getattr(tasks, self.task_name)
             task_heading_str = [f"Loaded {self.task_name} with {len(task_sequence)} steps:"]
@@ -111,7 +111,7 @@ class TaskExecutor(Node):
             self.get_logger().info(formatted_task_details)
             return task_sequence
         except AttributeError as ex:
-            self.get_logger().error(f"Could not find a task called '{self.task_name}' in mtc_panda_task_execution.task")
+            self.get_logger().error(f"Could not find a task called '{self.task_name}' in mtc_franka_task_execution.task")
             self.enter_error_state()
         
 
@@ -152,41 +152,41 @@ class TaskExecutor(Node):
             return
 
         # Plan and execute move
-        self.panda_arm.set_start_state_to_current_state()
+        self.franka_arm.set_start_state_to_current_state()
 
         if isinstance(self.current_task, MoveConfiguration):
-            self.panda_arm.set_goal_state(configuration_name=self.current_task.goal)
+            self.franka_arm.set_goal_state(configuration_name=self.current_task.goal)
         elif isinstance(self.current_task, MovePose):
-            self.panda_arm.set_goal_state(pose_stamped_msg=self.current_task.goal, pose_link="panda_hand_tcp")
+            self.franka_arm.set_goal_state(pose_stamped_msg=self.current_task.goal, pose_link="fr3_hand_tcp")
         elif isinstance(self.current_task, MovePoseRegister):
             if self.pose_register is not None:
-                self.panda_arm.set_goal_state(pose_stamped_msg=self.pose_register, pose_link="panda_hand_tcp")
+                self.franka_arm.set_goal_state(pose_stamped_msg=self.pose_register, pose_link="fr3_hand_tcp")
                 self.pose_register = None  # Only use the register once
             else:
                 self.get_logger().error("self.pose_register has not been populated")
                 self.enter_error_state()
                 return
         elif isinstance(self.current_task, MoveJoint):
-            robot_state = RobotState(self.panda.get_robot_model())
+            robot_state = RobotState(self.franka.get_robot_model())
             robot_state.joint_positions = {
-                'panda_joint1': self.current_task.goal.q1,
-                'panda_joint2': self.current_task.goal.q2,
-                'panda_joint3': self.current_task.goal.q3,
-                'panda_joint4': self.current_task.goal.q4,
-                'panda_joint5': self.current_task.goal.q5,
-                'panda_joint6': self.current_task.goal.q6,
-                'panda_joint7': self.current_task.goal.q7
+                'fr3_joint1': self.current_task.goal.q1,
+                'fr3_joint2': self.current_task.goal.q2,
+                'fr3_joint3': self.current_task.goal.q3,
+                'fr3_joint4': self.current_task.goal.q4,
+                'fr3_joint5': self.current_task.goal.q5,
+                'fr3_joint6': self.current_task.goal.q6,
+                'fr3_joint7': self.current_task.goal.q7
             }
             joint_constraint = construct_joint_constraint(
                 robot_state=robot_state,
-                joint_model_group=self.panda.get_robot_model().get_joint_model_group("panda_arm"),
+                joint_model_group=self.franka.get_robot_model().get_joint_model_group("fr3_arm"),
                 tolerance=0.0001
             )
-            self.panda_arm.set_goal_state(motion_plan_constraints=[joint_constraint])
+            self.franka_arm.set_goal_state(motion_plan_constraints=[joint_constraint])
         elif isinstance(self.current_task, MoveNull):
-            tcp: Pose = self.panda_arm.get_start_state().get_pose('panda_hand_tcp')
+            tcp: Pose = self.franka_arm.get_start_state().get_pose('fr3_hand_tcp')
             p, o = tcp.position, tcp.orientation
-            joints = self.panda_arm.get_start_state().joint_positions.items()
+            joints = self.franka_arm.get_start_state().joint_positions.items()
 
             self.get_logger().info("-" * 80)
             self.get_logger().info(" ~~~ CURRENT POSITION ~~~ ")
@@ -200,13 +200,13 @@ class TaskExecutor(Node):
             self.complete_move()
             return
 
-        plan_parameters = PlanRequestParameters(self.panda, self.current_task.planner)
+        plan_parameters = PlanRequestParameters(self.franka, self.current_task.planner)
         plan_parameters.max_velocity_scaling_factor = self.current_task.vel_scale
         plan_parameters.max_acceleration_scaling_factor = self.current_task.acc_scale
         plan_parameters.planning_attempts = 3
         plan_parameters.planning_time = 3.0
         success = plan_and_execute(
-            self.panda, self.panda_arm, self.get_logger(), single_plan_parameters=plan_parameters)
+            self.franka, self.franka_arm, self.get_logger(), single_plan_parameters=plan_parameters)
 
         # Progress to next state
         if success:

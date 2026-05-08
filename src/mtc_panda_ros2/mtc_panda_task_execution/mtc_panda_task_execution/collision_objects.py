@@ -31,7 +31,7 @@ def add_panda_cell(planning_scene_monitor: PlanningSceneMonitor,
 
     with planning_scene_monitor.read_write() as scene:
         cell = CollisionObject()
-        cell.header.frame_id = "panda_link0"
+        cell.header.frame_id = "fr3_link0"
         cell.id = "cell"
 
         # Desk
@@ -94,7 +94,7 @@ def add_walls(planning_scene_monitor: PlanningSceneMonitor,
     # Create collision object and add to planning scene
     with planning_scene_monitor.read_write() as scene:
         walls = CollisionObject()
-        walls.header.frame_id = "panda_link0"
+        walls.header.frame_id = "fr3_link0"
         walls.id = "walls"
 
         # Back wall
