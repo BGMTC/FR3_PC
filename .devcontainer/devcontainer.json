@@ -1,6 +1,6 @@
 {
     "name": "FR3_PC",
-    "dockerFile": "Dockerfile_claude",
+    "dockerFile": "Dockerfile",
     "build": {
         "args": {
             "WORKSPACE": "${containerWorkspaceFolder}",
@@ -20,7 +20,10 @@
         "--security-opt=apparmor:unconfined",
         "--volume=/tmp/.X11-unix:/tmp/.X11-unix",
         "--volume=/mnt/wslg:/mnt/wslg",
-        "--ipc=host"
+        "--ipc=host",
+        "--device=/dev",
+        // "--gpus=all",
+		"--privileged"
         // uncomment to use intel iGPU
         // "--device=/dev/dri"
         // uncomment to use Nvidia GPU with Linux

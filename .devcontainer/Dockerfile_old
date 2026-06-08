@@ -1,10 +1,22 @@
 # FR3_PC
-FROM althack/ros2:humble-cuda-dev AS base
+FROM althack/ros2:humble-cuda-dev 
 
-# Build arg passed from devcontainer.json
-ARG WORKSPACE=/ros2_ws
-ENV DEBIAN_FRONTEND=noninteractive
-ENV ROS_DISTRO=humble
+# ** [Optional] Uncomment this section to install additional packages. **
+
+# Install and build libfranka
+# apt-get clean && rm -rf /var/lib/apt/lists/* &&
+# RUN apt-get update \
+#    && apt-get install -y libpoco-dev libeigen3-dev 
+# # RUN git clone https://github.com/frankaemika/libfranka.git --recursive -b 0.19.0 
+# # RUN cd libfranka
+# RUN git clone --recurse-submodules https://github.com/frankarobotics/libfranka.git
+# RUN cd libfranka
+# RUN git checkout 0.19.0 
+# RUN mkdir build && cd build 
+# RUN cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=OFF  .. 
+# RUN cmake --build . -j$(nproc) 
+# RUN cpack -G DEB 
+# RUN sudo dpkg -i libfranka-*.deb
 
 RUN apt-get update \
    && apt-get -y install --no-install-recommends\
@@ -31,8 +43,8 @@ RUN apt-get update \
    python3-tk \
    ros-humble-rviz2 \
    ros-humble-control-toolbox \
-   ros-humble-cv-bridge \
-#  ros-humble-moveit-py \  doesn't exist
+   ros-humble-cv-bridge \ 
+   # ros-humble-moveit-py   doesn't exist
    ros-humble-moveit-configs-utils \
    ros-humble-moveit-planners \
    ros-humble-moveit-setup-assistant \
@@ -86,9 +98,7 @@ RUN apt-get update \
   libegl1 \
   libxext6 \
   libx11-6 \
-   && apt-get autoremove -y \
-   && apt-get clean -y \
-   && rm -rf /var/lib/apt/lists/*
+&& rm -rf /var/lib/apt/lists/*
 
 # Env vars for the nvidia-container-runtime.
 ENV NVIDIA_VISIBLE_DEVICES all
@@ -96,55 +106,42 @@ ENV NVIDIA_DRIVER_CAPABILITIES graphics,utility,compute
 
 ENV QT_X11_NO_MITSHM=1
 
-# installing missing dependancies
-RUN apt-get update \
-   && apt-get -y install --no-install-recommends\
-   ros-humble-ros-testing \
-   ros-humble-example-interfaces \
-   ros-humble-moveit-resources-fanuc-moveit-config \
-   ros-humble-moveit-resources-fanuc-description \
-   ros-humble-teleop-twist-joy \
-   ros-humble-teleop-twist-keyboard \
-   ros-humble-realsense2-description \
-   ros-humble-sick-safetyscanners2 \
-   ros-humble-ros-gz \
-   ros-humble-sdformat-urdf \
-   ros-humble-gz-ros2-control \
-   ros-humble-moveit-resources-pr2-description \
-   ros-humble-demo-nodes-cpp \
-   # ros-humble-warehouse-ros-mongo \
-   freeglut3-dev \
-   ros-humble-hardware-interface-testing \
-   libqt5opengl5-dev \
-   ros-humble-position-controllers \
-   #
-   # Clean up
-   && apt-get autoremove -y \
-   && apt-get clean -y \
-   && rm -rf /var/lib/apt/lists/*
-
-RUN apt-get update \
-   && apt-get -y install --no-install-recommends\
-   libgtest-dev \
-   libgmock-dev \
-   #
-   # Clean up
-   && apt-get autoremove -y \
-   && apt-get clean -y \
-   && rm -rf /var/lib/apt/lists/*
 # Import ros dependancies 
 # RUN vcs import /workspaces/FR3_PC/src < /workspaces/FR3_PC/src/franka_ros2/dependency.repos --recursive --skip-existing
 # ----- try as a post start command -------
 
-# rosdep init only - do NOT rosdep update here
-# rosdep update is handled in postCreateCommand so it always uses
-# a fresh index rather than one baked into the image at build time
-RUN rosdep init || true
+# Install moveit-py
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+ ros-humble-moveit* \
+   && apt-get autoremove -y \
+   && apt-get clean -y \
+   && rm -rf /var/lib/apt/lists/*
 
-WORKDIR ${WORKSPACE}
+# COPY 
+# RUN vcs import < moveit2/moveit2.repos 
+# RUN rosdep update 
+# RUN rosdep install --from-paths . --ignore-src -r -y
 
-COPY entrypoint.sh /entrypoint.sh
-# COPY .devcontainer/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
-CMD ["bash"]
+
+# commands 
+#
+
+# vcs import src < src/franka_ros2/dependency.repos --recursive --skip-existing
+# --------------ADDED----------- sudo apt-get update
+# --------------ADDED----------- sudo apt-get install -y ros-humble-pinocchio 
+#  colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release --cmake-args -DBUILD_TESTS=OFF
+
+# History from getting moveitPY working
+# sudo apt update
+#    18  sudo apt install ros-humble-moveit*
+#    19  ls
+#    20  cd src
+#    21  ls
+#    22  git clone https://github.com/moveit/moveit2.git -b humble
+#    23  vcs import < moveit2/moveit2.repos
+#    24  cd ..
+#    25  rosdep update
+#    26  rosdep install --from-paths src --ignore-src -r -y
+#    27  colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
+#    28  source install/setup.bash

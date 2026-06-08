@@ -3,17 +3,31 @@ Launch file for bringing up the basic task state machine
 """
 import os
 
-import yaml
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, TimerAction
+from launch.actions import (
+        DeclareLaunchArgument, 
+        IncludeLaunchDescription, 
+        TimerAction
+)
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import (Command, FindExecutable, LaunchConfiguration,
-                                  PathJoinSubstitution, PythonExpression)
+from launch.substitutions import (
+    Command, 
+    FindExecutable, 
+    LaunchConfiguration,
+    PathJoinSubstitution, 
+    PythonExpression
+)
 from launch_ros.actions import Node
+from launch_ros.parameter_descriptions import ParameterValue
+from launch_ros.substitutions import FindPackageShare
+
+import yaml
+
 from moveit_configs_utils import MoveItConfigsBuilder
 
+from ament_index_python.packages import get_package_share_directory
 
 def load_yaml(package_name, file_path):
     package_path = get_package_share_directory(package_name)
@@ -52,26 +66,69 @@ def generate_launch_description():
     )
 
     declared_args = [task_name_arg, loop_task_arg, use_vacuum_arg]
-    
-    franka_xacro_file = os.path.join(get_package_share_directory('franka_description'), 'robots',
-                                     'panda_arm.urdf.xacro')
-    
+
     # Need to invert the 'use_vacuum' for the hand arg in the xacro/urdf
     use_hand = PythonExpression(['not ', '(True if "', use_vacuum, '" == "true" else False)'
     ])
+
+
+    # franka_xacro_file = os.path.join(get_package_share_directory('franka_description'), 'robots',
+    #                                  'panda_arm.urdf.xacro')
+    
+    # planning_context
+    franka_xacro_file = os.path.join(
+        get_package_share_directory('franka_description'),
+        'robots', 'fr3', 'fr3.urdf.xacro'
+    )
+
+    # robot_description_config = Command(
+    #     [FindExecutable(name='xacro'), ' ', franka_xacro_file, ' hand:=', use_hand,
+    #      ' robot_ip:=', '172.20.9.185', ' use_fake_hardware:=false',
+    #      ' fake_sensor_commands:=false'])
     
     robot_description_config = Command(
-        [FindExecutable(name='xacro'), ' ', franka_xacro_file, ' hand:=', use_hand,
-         ' robot_ip:=', '172.20.9.185', ' use_fake_hardware:=false',
-         ' fake_sensor_commands:=false'])
+        [FindExecutable(name='xacro'), ' ', franka_xacro_file, 
+         ' hand:=true',
+         ' robot_ip:=172.16.0.2', 
+        #  ' ee_id:=', ee_id, 
+         ' use_fake_hardware:=false',
+         ' fake_sensor_commands:=false', 
+         ' ros2_control:=true'])
 
-    robot_description = {'robot_description': robot_description_config}
+    # robot_description_config = Command(
+    #     [FindExecutable(name='xacro'), ' ', franka_xacro_file, ' hand:=', use_hand,
+    #      ' robot_ip:=', '172.16.0.2',  ' use_fake_hardware:=false',
+    #      ' fake_sensor_commands:=false']) #' ros2_control:=true', ' ee_id:=', ee_id,
 
-    franka_semantic_xacro_file = os.path.join(get_package_share_directory('franka_moveit_config'),
-                                              'srdf',
-                                              'panda_arm.srdf.xacro')
+    # robot_description = {'robot_description': robot_description_config}
+
+    robot_description = {'robot_description': ParameterValue(
+        robot_description_config, value_type=str)}
+
+    # franka_semantic_xacro_file = os.path.join(get_package_share_directory('franka_moveit_config'),
+    #                                           'srdf',
+    #                                           'panda_arm.srdf.xacro')
+    franka_semantic_xacro_file = os.path.join(
+    get_package_share_directory('franka_description'),
+    'robots', 'fr3', 'fr3.srdf.xacro'
+    )
+
+
+    # robot_description_semantic_config = Command(
+    #     [FindExecutable(name='xacro'), ' ', franka_semantic_xacro_file, ' hand:=', use_hand]
+    # )
+
     robot_description_semantic_config = Command(
-        [FindExecutable(name='xacro'), ' ', franka_semantic_xacro_file, ' hand:=', use_hand]
+        [FindExecutable(name='xacro'), ' ',
+         franka_semantic_xacro_file, ' hand:=true'] #, use_hand] #, ' ee_id:=', ee_id]
+    )
+
+    robot_description_semantic = {'robot_description_semantic': ParameterValue(
+        robot_description_semantic_config, value_type=str)}
+
+
+    kinematics_yaml = load_yaml(
+        'franka_fr3_moveit_config', 'config/kinematics.yaml'
     )
 
     # Planning Functionality
@@ -88,25 +145,71 @@ def generate_launch_description():
         }
     }
     ompl_planning_yaml = load_yaml(
-        'franka_moveit_config', 'config/ompl_planning.yaml'
+        'franka_fr3_moveit_config', 'config/ompl_planning.yaml'
     )
     ompl_planning_pipeline_config['move_group'].update(ompl_planning_yaml)
     
-    config_dir = get_package_share_directory('mtc_panda_bringup')
-    moveit_config = (
-        MoveItConfigsBuilder(robot_name='panda', package_name='franka_moveit_config')
-        .robot_description(file_path=franka_xacro_file,
-                           mappings={'hand':'true',
-                                     'robot_ip': '172.20.9.185',
-                                     'use_fake_hardware': 'false',
-                                     'fake_sensor_commands': 'false'})
-        .robot_description_semantic(file_path='srdf/panda_arm.srdf.xacro')
-        .trajectory_execution(file_path=os.path.join(config_dir, 'config', 'moveit_controllers.yaml'))
-        .moveit_cpp(file_path=os.path.join(config_dir, 'config', 'planners.yaml'))
-        .joint_limits(file_path=os.path.join(config_dir, 'config', 'joint_limits.yaml'))
-        .pilz_cartesian_limits(file_path=os.path.join(config_dir, 'config', 'pilz_cartesian_limits.yaml'))
-        .to_moveit_configs()
+    # config_dir = get_package_share_directory('mtc_panda_bringup')
+
+    # moveit_config = (
+    #     MoveItConfigsBuilder(robot_name='fr3', package_name='franka_fr3_moveit_config')
+    #     .robot_description(file_path=franka_xacro_file,
+    #                        mappings={'hand':'true',
+    #                                  'robot_ip': '172.16.0.2',
+    #                                  'use_fake_hardware': 'false',
+    #                                  'fake_sensor_commands': 'false'})
+    #     .robot_description_semantic(file_path='../../../src/franka_description/robots/fr3/fr3.srdf.xacro')  #srdf/panda_arm.srdf.xacro
+    #     .trajectory_execution(file_path=os.path.join(config_dir, 'config', 'moveit_controllers.yaml'))
+    #     .moveit_cpp(file_path=os.path.join(config_dir, 'config', 'planners.yaml'))
+    #     .joint_limits(file_path=os.path.join(config_dir, 'config', 'joint_limits_fr3.yaml'))
+    #     .pilz_cartesian_limits(file_path=os.path.join(config_dir, 'config', 'pilz_cartesian_limits.yaml'))
+    #     .to_moveit_configs()
+    # )
+
+
+#robot description 
+
+
+
+#robot_description_semantic
+
+
+
+#trajectory_execution
+    # trajectory_execution = os.path.join(config_dir, 'config', 'moveit_controllers.yaml')
+    trajectory_execution = {
+        'moveit_manage_controllers': True,
+        'trajectory_execution.allowed_execution_duration_scaling': 1.2,
+        'trajectory_execution.allowed_goal_duration_margin': 0.5,
+        'trajectory_execution.allowed_start_tolerance': 0.01,
+    }
+
+#moveit_cpp
+    # moveit_cpp = os.path.join(config_dir, 'config', 'planners.yaml')
+# Trajectory Execution Functionality - replacing moveit_cpp
+    moveit_simple_controllers_yaml = load_yaml(
+        'franka_fr3_moveit_config', 'config/fr3_controllers.yaml'
     )
+    moveit_controllers = {
+        'moveit_simple_controller_manager': moveit_simple_controllers_yaml,
+        'moveit_controller_manager': 'moveit_simple_controller_manager'
+                                     '/MoveItSimpleControllerManager',
+    }
+
+    planning_scene_monitor_parameters = {
+        'publish_planning_scene': True,
+        'publish_geometry_updates': True,
+        'publish_state_updates': True,
+        'publish_transforms_updates': True,
+    }
+
+
+# # joint limits
+#     joint_limits = os.path.join(config_dir, 'config', 'joint_limits_fr3.yaml')
+
+# #pilz_cartesian_limits
+#     pilz_cartesian_limits = os.path.join(config_dir, 'config', 'pilz_cartesian_limits.yaml')
+
 
     task_executor = Node(
         name='task_executor',
@@ -114,7 +217,14 @@ def generate_launch_description():
         executable='task_executor',
         output='both',
         parameters=[
-            moveit_config.to_dict(),
+            # moveit_config.to_dict(),
+            robot_description,
+            robot_description_semantic,
+            kinematics_yaml,
+            ompl_planning_pipeline_config,
+            trajectory_execution,
+            moveit_controllers,
+            planning_scene_monitor_parameters,      
             {'task_name': task_name},
             {'loop_task': loop_task},
             {'use_vacuum': use_vacuum},
@@ -143,7 +253,7 @@ def generate_launch_description():
     static_tf_publishers = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             launch_file_path=PathJoinSubstitution(
-                [get_package_share_directory('mtc_panda_bringup'), 'launch', 'tf_publisher.launch.py']
+                [get_package_share_directory('mtc_panda_bringup'), 'launch', 'tf_publisher.launch.py'] 
             )
         )
     )
@@ -157,15 +267,25 @@ def generate_launch_description():
     )
 
     # RViz
-    rviz_config = os.path.join(get_package_share_directory('mtc_panda_bringup'), 'config', 'config.rviz')
+    # rviz_config = os.path.join(get_package_share_directory('mtc_panda_bringup'), 'config', 'config.rviz')
+    rviz_base = os.path.join(get_package_share_directory('franka_fr3_moveit_config'),'rviz')
+    rviz_full_config = os.path.join(rviz_base, 'moveit.rviz')
+
     rviz_node = Node(
         package='rviz2',
         executable='rviz2',
         name='rviz2',
         output='log',
-        arguments=['-d', rviz_config],
+        arguments=['-d', rviz_full_config],
         parameters=[
-            moveit_config.to_dict()
+            robot_description,
+            robot_description_semantic,
+            trajectory_execution,
+            # moveit_cpp,
+            # joint_limits,
+            # pilz_cartesian_limits,
+            ompl_planning_pipeline_config,
+            kinematics_yaml,
         ],
     )
 
