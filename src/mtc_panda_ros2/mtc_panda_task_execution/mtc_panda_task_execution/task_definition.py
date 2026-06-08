@@ -7,7 +7,7 @@ from mtc_panda_task_execution.utils import (list_to_pose, list_to_pose_stamped,
                                             transform_pose_stamped)
 
 # Common
-base_frame = 'panda_link0'
+base_frame = 'fr3_link0'
 capture_pose = MoveNull(None, '')
 move_ready = MoveConfiguration('ready', 'ompl_rrtc', 1.0, 0.5)
 open_gripper = GripperTask(0.08, 0.1)

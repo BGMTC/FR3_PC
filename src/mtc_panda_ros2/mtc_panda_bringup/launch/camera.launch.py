@@ -12,12 +12,12 @@ def generate_launch_description():
                 # 'camera_namespace': 'd435',
                 'align_depth.enable': 'true',
                 'disparity_filter.enable': 'true',
-                'spatial_filter': 'true',
-                'temporal_filter': 'true',
-                'decimation_filter': 'true',
-                'hole_filling_filter': 'true',
-                'rgb_camera.profile': '1280x720x30',
-                'depth_module.profile': '1280x720x30',
+                'spatial_filter.enable': 'true',
+                'temporal_filter.enable': 'true',
+                'decimation_filter.enable': 'true',
+                'hole_filling_filter.enable': 'true',
+                'rgb_camera.color_profile': '1280x720x30',
+                'depth_module.depth_profile': '1280x720x30',
                 'pointcloud.enable': 'true'
             }.items()
     )
