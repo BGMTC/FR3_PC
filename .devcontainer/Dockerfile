@@ -127,6 +127,9 @@ RUN apt-get update \
    && apt-get -y install --no-install-recommends\
    libgtest-dev \
    libgmock-dev \
+   ros-humble-py-binding-tools\
+   ros-humble-rviz-visual-tools\
+   ros-humble-graph-msgs\
    #
    # Clean up
    && apt-get autoremove -y \

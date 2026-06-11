@@ -1,5 +1,5 @@
 {
-    "name": "FR3_PC",
+    "name": "FR3_PC_Container",
     "dockerFile": "Dockerfile",
     "build": {
         "args": {
