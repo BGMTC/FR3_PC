@@ -2,3 +2,15 @@ build/*
 install/*
 log/*
 site/*
+src/examples/
+src/franka_description/
+src/launch_param_builder/
+src/libfranka/
+src/moveit2_tutorials/
+src/moveit_msgs/
+src/moveit_resources/
+src/moveit_task_constructor/
+src/moveit_visual_tools/
+src/olvx_descriptions_module/
+src/rosparam_shortcuts/
+src/srdfdom/

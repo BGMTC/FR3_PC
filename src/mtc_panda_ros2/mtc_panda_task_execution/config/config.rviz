@@ -119,66 +119,66 @@ Visualization Manager:
         #   Alpha: 1
         #   Show Axes: false
         #   Show Trail: false
-        fr3_hand:
+        fr3v2_hand:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        fr3_hand_tcp:
+        fr3v2_hand_tcp:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        fr3_leftfinger:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        fr3_link0:
+        fr3v2_leftfinger:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        fr3_link1:
+        fr3v2_link0:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        fr3_link2:
+        fr3v2_link1:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        fr3_link3:
+        fr3v2_link2:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        fr3_link4:
+        fr3v2_link3:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        fr3_link5:
+        fr3v2_link4:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        fr3_link6:
+        fr3v2_link5:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        fr3_link7:
+        fr3v2_link6:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        fr3_link8:
+        fr3v2_link7:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        fr3_rightfinger:
+        fr3v2_link8:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        fr3v2_rightfinger:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -270,66 +270,66 @@ Visualization Manager:
           #   Alpha: 1
           #   Show Axes: false
           #   Show Trail: false
-          fr3_hand:
+          fr3v2_hand:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          fr3_hand_tcp:
+          fr3v2_hand_tcp:
             Alpha: 1
             Show Axes: false
             Show Trail: false
-          fr3_leftfinger:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          fr3_link0:
+          fr3v2_leftfinger:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          fr3_link1:
+          fr3v2_link0:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          fr3_link2:
+          fr3v2_link1:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          fr3_link3:
+          fr3v2_link2:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          fr3_link4:
+          fr3v2_link3:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          fr3_link5:
+          fr3v2_link4:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          fr3_link6:
+          fr3v2_link5:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          fr3_link7:
+          fr3v2_link6:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          fr3_link8:
+          fr3v2_link7:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          fr3_rightfinger:
+          fr3v2_link8:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          fr3v2_rightfinger:
             Alpha: 1
             Show Axes: false
             Show Trail: false
@@ -355,31 +355,31 @@ Visualization Manager:
           Value: true
         cell:
           Value: true
-        fr3_hand:
+        fr3v2_hand:
           Value: true
-        fr3_hand_tcp:
+        fr3v2_hand_tcp:
           Value: true        
-        fr3_leftfinger:
+        fr3v2_leftfinger:
           Value: true
-        fr3_link0:
+        fr3v2_link0:
           Value: true
-        fr3_link1:
+        fr3v2_link1:
           Value: true
-        fr3_link2:
+        fr3v2_link2:
           Value: true
-        fr3_link3:
+        fr3v2_link3:
           Value: true
-        fr3_link4:
+        fr3v2_link4:
           Value: true
-        fr3_link5:
+        fr3v2_link5:
           Value: true
-        fr3_link6:
+        fr3v2_link6:
           Value: true
-        fr3_link7:
+        fr3v2_link7:
           Value: true
-        fr3_link8:
+        fr3v2_link8:
           Value: true
-        fr3_rightfinger:
+        fr3v2_rightfinger:
           Value: true
         world:
           Value: true
@@ -413,17 +413,17 @@ Visualization Manager:
       #                           {}
       Tree:
         world:
-          fr3_link0:
+          fr3v2_link0:
             cell:
               {}
-            fr3_link1:
-              fr3_link2:
-                fr3_link3:
-                  fr3_link4:
-                    fr3_link5:
-                      fr3_link6:
-                        fr3_link7:
-                          fr3_link8:
+            fr3v2_link1:
+              fr3v2_link2:
+                fr3v2_link3:
+                  fr3v2_link4:
+                    fr3v2_link5:
+                      fr3v2_link6:
+                        fr3v2_link7:
+                          fr3v2_link8:
                             camera_link:
                               camera_color_frame:
                                 camera_color_optical_frame:
@@ -434,12 +434,12 @@ Visualization Manager:
                             # magtec_ee:
                             #   magtec_tcp:
                             #     {}
-                            fr3_hand:
-                              fr3_hand_tcp:
+                            fr3v2_hand:
+                              fr3v2_hand_tcp:
                                 {}
-                              fr3_leftfinger:
+                              fr3v2_leftfinger:
                                 {}
-                              fr3_rightfinger:
+                              fr3v2_rightfinger:
                                 {}
       Update Interval: 0
       Value: true

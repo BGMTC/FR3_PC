@@ -7,9 +7,9 @@ from mtc_panda_task_execution.utils import (list_to_pose, list_to_pose_stamped,
                                             transform_pose_stamped)
 
 # Common
-base_frame = 'fr3_link0'
+base_frame = 'fr3v2_link0'
 capture_pose = MoveNull(None, '')
-move_ready = MoveConfiguration('ready', 'ompl_rrtc', 1.0, 0.5)
+move_ready = MoveConfiguration('ready', 'ompl', 1.0, 0.5)
 open_gripper = GripperTask(0.08, 0.1)
 close_gripper = GripperTask(0.0, 0.1, 40)
 
@@ -27,7 +27,7 @@ capture_pose_task = [capture_pose]
 # Above position
 above_j = JointTarget(0.54837, 0.03333, -2.84364, -1.25778, -0.01442, 1.25128, -0.67093)
 move_above_j = MoveJoint(goal=above_j,
-                       planner='ompl_rrtc',
+                       planner='ompl',
                        vel_scale=1.0,
                        acc_scale=0.5)
 
@@ -41,13 +41,13 @@ vision_task = ServiceTask(type='mtc_panda_interfaces/srv/GetPose',
 pre_pick = list_to_pose_stamped(vals=[-0.3318, -0.3743, 0.1, 0.9121, -0.4098, -0.0138, 0.0069],
                              frame_id=base_frame)
 move_pre_pick= MovePose(goal=pre_pick,
-                        planner='ompl_rrtc',
+                        planner='ompl',
                         vel_scale=1.0,
                         acc_scale=0.5)
 
 # pre_pick = JointTarget(0.36471, -0.30622 , -2.61078, -2.18704 , -0.28741 , 2.45322 ,-0.42416)
 # move_pre_pick= MoveJoint(goal=pre_pick,
-#                        planner='ompl_rrtc',
+#                        planner='ompl',
 #                        vel_scale=1.0,
 #                        acc_scale=0.5)
 
@@ -56,7 +56,7 @@ move_pre_pick= MovePose(goal=pre_pick,
 # Detected position
 move_detected_position = MovePoseRegister(goal=None,
                                         #   planner='pilz_lin',
-                                          planner='ompl_rrtc',
+                                          planner='ompl',
                                           vel_scale=1.0,
                                         #   acc_scale=0.002)
                                         acc_scale=0.5)

@@ -78,7 +78,7 @@ def generate_launch_description():
     # planning_context
     franka_xacro_file = os.path.join(
         get_package_share_directory('franka_description'),
-        'robots', 'fr3', 'fr3.urdf.xacro'
+        'robots', 'fr3v2', 'fr3v2.urdf.xacro'
     )
 
     # robot_description_config = Command(
@@ -110,7 +110,7 @@ def generate_launch_description():
     #                                           'panda_arm.srdf.xacro')
     franka_semantic_xacro_file = os.path.join(
     get_package_share_directory('franka_description'),
-    'robots', 'fr3', 'fr3.srdf.xacro'
+    'robots', 'fr3v2', 'fr3v2.srdf.xacro'
     )
 
 
@@ -167,7 +167,7 @@ def generate_launch_description():
     }
 
     ompl_planning_yaml = load_yaml(
-        'franka_fr3_moveit_config', 'config/ompl_planning.yaml'
+        'franka_fr3_moveit_config', 'config/ompl_planning.yaml' # no change
     )
     ompl_planning_pipeline_config['ompl'].update(ompl_planning_yaml)  # ← update 'ompl', not 'move_group'
     
@@ -216,7 +216,7 @@ def generate_launch_description():
     # moveit_cpp = os.path.join(config_dir, 'config', 'planners.yaml')
 # Trajectory Execution Functionality - replacing moveit_cpp
     moveit_simple_controllers_yaml = load_yaml(
-        'franka_fr3_moveit_config', 'config/fr3_controllers.yaml'
+        'mtc_panda_bringup', 'config/moveit_controllers.yaml'
     )
     moveit_controllers = {
         'moveit_simple_controller_manager': moveit_simple_controllers_yaml,
